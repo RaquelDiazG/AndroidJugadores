@@ -8,12 +8,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.util.List;
 
 import es.upm.miw.jugadores.models.Futbolista;
 import es.upm.miw.jugadores.models.FutbolistaRepositorio;
 
 public class ActividadPrincipal extends AppCompatActivity {
 
+    private List<Futbolista> listaFutbolistas;
+    ListView lvlistadofutbolistas;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,10 +38,16 @@ public class ActividadPrincipal extends AppCompatActivity {
 
         //Creamos una instancia del repositorio
         FutbolistaRepositorio repositorio=new FutbolistaRepositorio(getApplicationContext());
-        //Creamos un piloto
+        //Creamos un futbolista
         Futbolista futbolista1=new Futbolista(-1,"Jugador 1",1,true,"Primera",null);
         //Añadimos el futbolista al repositorio
         repositorio.add(futbolista1);
+
+        //Recuperamos todos los futbolistas
+        this.listaFutbolistas=repositorio.getAll();
+        ArrayAdapter<Futbolista> adaptador=new FutbolistaAdapter(this,listaFutbolistas);
+        lvlistadofutbolistas=(ListView)findViewById(R.id.listadoFutbolistas);
+        lvlistadofutbolistas.setAdapter(adaptador);
     }
 
     @Override
