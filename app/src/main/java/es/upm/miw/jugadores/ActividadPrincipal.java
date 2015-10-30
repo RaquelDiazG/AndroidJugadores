@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import es.upm.miw.jugadores.models.Futbolista;
+import es.upm.miw.jugadores.models.FutbolistaRepositorio;
+
 public class ActividadPrincipal extends AppCompatActivity {
 
     @Override
@@ -26,6 +29,13 @@ public class ActividadPrincipal extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        //Creamos una instancia del repositorio
+        FutbolistaRepositorio repositorio=new FutbolistaRepositorio(getApplicationContext());
+        //Creamos un piloto
+        Futbolista futbolista1=new Futbolista(1,"Jugador 1",1,true,"Primera",null);
+        //Añadimos el futbolista al repositorio
+        repositorio.add(futbolista1);
     }
 
     @Override
