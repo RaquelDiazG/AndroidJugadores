@@ -31,8 +31,11 @@ public class FutbolistaRepositorio extends SQLiteOpenHelper{
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        //Borramos la tabla
         String sql="DROP TABLE IF EXIST "+TablaFutbolista.TABLE_NAME;
         db.execSQL(sql);
+        //Generamos la nueva tabla
+        onCreate(db);
     }
 
     public long add(Futbolista futbolista){
@@ -41,7 +44,7 @@ public class FutbolistaRepositorio extends SQLiteOpenHelper{
         //Creamos un contenedor de valores
         ContentValues valores=new ContentValues();
         //Añadimos los valores del futbolista
-        valores.put(TablaFutbolista.COL_NAME_ID,futbolista.get_id());
+        //valores.put(TablaFutbolista.COL_NAME_ID,futbolista.get_id());
         valores.put(TablaFutbolista.COL_NAME_NOMBRE,futbolista.get_nombre());
         valores.put(TablaFutbolista.COL_NAME_DORSAL,futbolista.get_dorsal());
         valores.put(TablaFutbolista.COL_NAME_LESIONADO,futbolista.is_lesionado());

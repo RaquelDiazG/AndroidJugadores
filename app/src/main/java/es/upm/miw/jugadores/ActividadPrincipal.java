@@ -33,7 +33,7 @@ public class ActividadPrincipal extends AppCompatActivity {
         //Creamos una instancia del repositorio
         FutbolistaRepositorio repositorio=new FutbolistaRepositorio(getApplicationContext());
         //Creamos un piloto
-        Futbolista futbolista1=new Futbolista(1,"Jugador 1",1,true,"Primera",null);
+        Futbolista futbolista1=new Futbolista(-1,"Jugador 1",1,true,"Primera",null);
         //Añadimos el futbolista al repositorio
         repositorio.add(futbolista1);
     }
