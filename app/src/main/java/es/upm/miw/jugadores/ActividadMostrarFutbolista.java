@@ -1,14 +1,27 @@
 package es.upm.miw.jugadores;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import es.upm.miw.jugadores.models.Futbolista;
 
@@ -56,21 +69,14 @@ public class ActividadMostrarFutbolista extends AppCompatActivity {
         else if (!hayRed())
             ivImagenFutbolista.setImageResource(R.drawable.icon_desconectado);
         else {  // recuperar imagen
-            // Drawable imagen = null;
-            // Resources res = this.getApplicationContext().getResources();
-            // InputStream is = new URL(piloto.get_url_imagen()).openStream();
-            // imagen = new BitmapDrawable(res, BitmapFactory.decodeStream(is));
-            // ivImagenPiloto.setImageDrawable(imagen);
-            //
-            // podría ser... pero lanza NetworkOnMainThreadException
 
-            // TareaCargarImagen tarea = new TareaCargarImagen();
-            // ivImagenPiloto.setTag(piloto.get_url_imagen());
-            // tarea.execute(ivImagenPiloto);
+             TareaCargarImagen tarea = new TareaCargarImagen(futbolista.get_url_imagen());
+            //ivImagenFutbolista.setTag(futbolista.get_url_imagen());
+             tarea.execute(ivImagenFutbolista);
 
-            // Picasso.with(context).load(url).into(imageView);
+             //Picasso.with(contexto).load(url).into(imageView);
             // http://square.github.io/picasso/
-            // Picasso.with(contexto).load(futbolista.get_url_imagen()).into(ivImagenFutbolista);
+             //Picasso.with(contexto).load(futbolista.get_url_imagen()).into(ivImagenFutbolista);
         }
 
         setResult(RESULT_OK);
@@ -93,4 +99,36 @@ public class ActividadMostrarFutbolista extends AppCompatActivity {
 
         return conectividad;
     }
+
+    private class TareaCargarImagen extends AsyncTask<ImageView, Void, Bitmap> {
+
+        private String url;
+        private ImageView imageView = null;
+
+        public TareaCargarImagen(String url) {
+            this.url = url;
+        }
+
+
+        @Override
+        protected Bitmap doInBackground(ImageView... imageViews) {
+            this.imageView = imageViews[0];
+            Bitmap bmp = null;
+            try {
+                //URL ulrn = new URL(URL_OBJETIVO);
+                URL ulrn=new URL(url);
+                HttpURLConnection con = (HttpURLConnection) ulrn.openConnection();
+                InputStream is = con.getInputStream();
+                bmp = BitmapFactory.decodeStream(is);
+            } catch (Exception e) {
+                Log.e("ERROR", e.getMessage());
+            }
+            return bmp;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            imageView.setImageBitmap(result);
+        }
+    } // TareaCargarImagen
 }

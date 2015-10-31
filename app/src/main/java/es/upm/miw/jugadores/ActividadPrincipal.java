@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,10 +42,13 @@ public class ActividadPrincipal extends AppCompatActivity {
         //Creamos una instancia del repositorio
         FutbolistaRepositorio repositorio=new FutbolistaRepositorio(getApplicationContext());
         //Creamos un futbolista
-        Futbolista futbolista1=new Futbolista(-1,"Jugador 1",1,true,"Primera","http://misimagenesde.com/wp-content/uploads/2009/02/balones-de-futbol.jpg");
+        int num = (int) (100 * Math.random());
+        Log.i("Num", String.format("%d", repositorio.add(
+                new Futbolista(num, "Jugador " + String.format("%d", num), num, num % 2 == 0, "Primera", null))));
         //Añadimos el futbolista al repositorio
-        repositorio.add(futbolista1);
-
+        repositorio.add(
+                new Futbolista(++num, "Jugador " + String.format("%d", num), num, num % 2 == 0, "Primera",
+                        "http://www.upm.es/estaticos/imagenes/comunes/universidad_politecnica_logoI.png"));
         //Recuperamos todos los futbolistas
         this.listaFutbolistas=repositorio.getAll();
         ArrayAdapter<Futbolista> adaptador=new FutbolistaAdapter(this,listaFutbolistas);
