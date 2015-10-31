@@ -1,6 +1,9 @@
 package es.upm.miw.jugadores.models;
 
-public class Futbolista {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Futbolista implements Parcelable {
 
     private int _id;
     private String _nombre;
@@ -76,5 +79,40 @@ public class Futbolista {
                 ", _equipo='" + _equipo + '\'' +
                 ", _url_imagen='" + _url_imagen + '\'' +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(_id);
+        dest.writeString(_nombre);
+        dest.writeInt(_dorsal);
+        dest.writeInt((byte) (_lesionado ? 1 : 0));
+        dest.writeString(_equipo);
+        dest.writeString(_url_imagen);
+    }
+
+    public static final Parcelable.Creator<Futbolista> CREATOR
+            = new Parcelable.Creator<Futbolista>() {
+        public Futbolista createFromParcel(Parcel in) {
+            return new Futbolista(in);
+        }
+
+        public Futbolista[] newArray(int size) {
+            return new Futbolista[size];
+        }
+    };
+
+    private Futbolista(Parcel origen) {
+        this._id         = origen.readInt();
+        this._nombre     = origen.readString();
+        this._dorsal     = origen.readInt();
+        this._lesionado  = origen.readByte() != 0;
+        this._equipo     = origen.readString();
+        this._url_imagen = origen.readString();
     }
 }

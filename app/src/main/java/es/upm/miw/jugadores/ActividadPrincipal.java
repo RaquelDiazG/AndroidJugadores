@@ -1,5 +1,6 @@
 package es.upm.miw.jugadores;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -39,7 +41,7 @@ public class ActividadPrincipal extends AppCompatActivity {
         //Creamos una instancia del repositorio
         FutbolistaRepositorio repositorio=new FutbolistaRepositorio(getApplicationContext());
         //Creamos un futbolista
-        Futbolista futbolista1=new Futbolista(-1,"Jugador 1",1,true,"Primera",null);
+        Futbolista futbolista1=new Futbolista(-1,"Jugador 1",1,true,"Primera","http://misimagenesde.com/wp-content/uploads/2009/02/balones-de-futbol.jpg");
         //Añadimos el futbolista al repositorio
         repositorio.add(futbolista1);
 
@@ -48,6 +50,18 @@ public class ActividadPrincipal extends AppCompatActivity {
         ArrayAdapter<Futbolista> adaptador=new FutbolistaAdapter(this,listaFutbolistas);
         lvlistadofutbolistas=(ListView)findViewById(R.id.listadoFutbolistas);
         lvlistadofutbolistas.setAdapter(adaptador);
+
+        lvlistadofutbolistas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // TODO editar futbolistas
+                // Toast.makeText(contexto, futbolistas.get(position).toString(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(ActividadPrincipal.this, ActividadMostrarFutbolista.class);
+                // TO DO Parcelable
+                intent.putExtra("MOSTRAR_Futbolista", listaFutbolistas.get(position));
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

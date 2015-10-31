@@ -59,22 +59,78 @@ public class FutbolistaRepositorio extends SQLiteOpenHelper {
     }
 
     public List<Futbolista> getAll() {
-        List<Futbolista> lista = new ArrayList<>();
-        //Acceder a la BBDD en modo lectura
+        return getAll(TablaFutbolista.COL_NAME_ID, true);
+    }
+
+    public List<Futbolista> getAll(String columna, boolean ordenAscendente) {
+        List<Futbolista> resultado = new ArrayList<>();
+        String consultaSQL = "SELECT * FROM " + TablaFutbolista.TABLE_NAME
+                + " ORDER BY " + columna + (ordenAscendente ? " ASC" : " DESC");
+
+        // Accedo a la DB en modo lectura
         SQLiteDatabase db = this.getReadableDatabase();
-        //Recuperar todos los futbolistas
-        String sql = "SELECT * FROM " + TablaFutbolista.TABLE_NAME;
-        Cursor cursor = db.rawQuery(sql, null);
-        while (cursor.moveToNext()) { //hay datos
-            int id = cursor.getInt(cursor.getColumnIndex(TablaFutbolista.COL_NAME_ID));
-            String nombre = cursor.getString(cursor.getColumnIndex(TablaFutbolista.COL_NAME_NOMBRE));
-            int dorsal = cursor.getInt(cursor.getColumnIndex(TablaFutbolista.COL_NAME_DORSAL));
-            boolean lesionado = cursor.getInt(cursor.getColumnIndex(TablaFutbolista.COL_NAME_LESIONADO)) != 0;
-            String equipo = cursor.getString(cursor.getColumnIndex(TablaFutbolista.COL_NAME_EQUIPO));
-            String url_imagen = cursor.getString(cursor.getColumnIndex(TablaFutbolista.COL_NAME_URL_IMAGEN));
-            Futbolista futbolista = new Futbolista(id, nombre, dorsal, lesionado, equipo, url_imagen);
-            lista.add(futbolista);
+        Cursor cursor = db.rawQuery(consultaSQL, null);
+
+        // Recorrer cursor asignando resultados
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                Futbolista futbolista = new Futbolista(
+                        cursor.getInt(cursor.getColumnIndex(TablaFutbolista.COL_NAME_ID)),
+                        cursor.getString(cursor.getColumnIndex(TablaFutbolista.COL_NAME_NOMBRE)),
+                        cursor.getInt(cursor.getColumnIndex(TablaFutbolista.COL_NAME_DORSAL)),
+                        cursor.getInt(cursor.getColumnIndex(TablaFutbolista.COL_NAME_LESIONADO)) != 0,
+                        cursor.getString(cursor.getColumnIndex(TablaFutbolista.COL_NAME_EQUIPO)),
+                        cursor.getString(cursor.getColumnIndex(TablaFutbolista.COL_NAME_URL_IMAGEN))
+                );
+                resultado.add(futbolista);
+                cursor.moveToNext();
+            }
+            cursor.close();
         }
-        return lista;
+
+        return resultado;
+    }
+
+
+    public long count() {
+        String sql = "SELECT COUNT(*) FROM " + TablaFutbolista.TABLE_NAME;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(sql, null);
+        cursor.moveToFirst();
+        long numero = cursor.getLong(0);
+        cursor.close();
+
+        return numero;
+    }
+
+    public long deleteAll() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TablaFutbolista.TABLE_NAME, "1", null);
+    }
+
+    public Futbolista getFutbolistaByID(int id) {
+        String sql = "SELECT * FROM " + TablaFutbolista.TABLE_NAME
+                + " WHERE " + TablaFutbolista.COL_NAME_ID + " = ?";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Futbolista futbolista = null;
+        Cursor cursor = db.rawQuery(
+                sql,
+                new String[]{ String.valueOf(id) }
+        );
+
+        if (cursor.moveToFirst()) {
+            futbolista = new Futbolista(
+                    cursor.getInt(cursor.getColumnIndex(TablaFutbolista.COL_NAME_ID)),
+                    cursor.getString(cursor.getColumnIndex(TablaFutbolista.COL_NAME_NOMBRE)),
+                    cursor.getInt(cursor.getColumnIndex(TablaFutbolista.COL_NAME_DORSAL)),
+                    cursor.getInt(cursor.getColumnIndex(TablaFutbolista.COL_NAME_LESIONADO)) != 0,
+                    cursor.getString(cursor.getColumnIndex(TablaFutbolista.COL_NAME_EQUIPO)),
+                    cursor.getString(cursor.getColumnIndex(TablaFutbolista.COL_NAME_URL_IMAGEN))
+            );
+            cursor.close();
+        }
+
+        return futbolista;
     }
 }

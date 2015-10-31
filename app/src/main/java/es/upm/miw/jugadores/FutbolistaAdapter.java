@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -43,6 +44,10 @@ public class FutbolistaAdapter extends ArrayAdapter<Futbolista>{
             tvnombre.setText(futbolista.get_nombre());
             TextView tvequipo=(TextView)convertView.findViewById(R.id.tvFutbolistaEquipo);
             tvequipo.setText(futbolista.get_equipo());
+            ImageView ivLesionado = (ImageView) convertView.findViewById(R.id.tvFutbolistaLesionado);
+            ivLesionado.setImageResource(futbolista.is_lesionado()
+                    ? android.R.drawable.button_onoff_indicator_on
+                    : android.R.drawable.button_onoff_indicator_off);
         }
         return convertView;
     }
